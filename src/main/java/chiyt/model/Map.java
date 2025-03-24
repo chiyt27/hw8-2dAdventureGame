@@ -41,6 +41,13 @@ public class Map {
         obj.setPosition(x, y);
     }
 
+	public void placeObject(MapObject obj, int x, int y) {
+		//檢查有沒有超出範圍
+		if(x<0 || x>width)
+			
+        obj.setPosition(x, y);
+    }
+
     public void printMap() {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {

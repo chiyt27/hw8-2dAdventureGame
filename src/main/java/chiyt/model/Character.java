@@ -5,21 +5,6 @@ import java.util.Random;
 import chiyt.Game;
 
 public class Character extends Role {
-
-    public enum Direction {
-        UP("↑"), DOWN("↓"), LEFT("←"), RIGHT("→");
-
-        String symbol;
-
-        Direction(String symbol) {
-            this.symbol = symbol;
-        }
-
-        public String getSymbol() {
-            return symbol;
-        }
-    }
-
     Direction direction;
 
     public Character(int x, int y) {
@@ -36,15 +21,8 @@ public class Character extends Role {
         return direction.getSymbol();
     }
 
-    public void move(String dir) {
-        map[y][x] = '.';
-        int newX = x, newY = y;
-        switch (dir) {
-            case 'U': newY--; direction = '↑'; break;
-            case 'D': newY++; direction = '↓'; break;
-            case 'L': newX--; direction = '←'; break;
-            case 'R': newX++; direction = '→'; break;
-        }
+    public void move(Direction dir, Map map) {
+		this.direction = dir;
         if (newX >= 0 && newX < 10 && newY >= 0 && newY < 10 && map[newY][newX] != '□') {
             x = newX;
             y = newY;

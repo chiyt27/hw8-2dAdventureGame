@@ -1,5 +1,7 @@
 package chiyt.model;
 
+import java.nio.file.DirectoryIteratorException;
+
 public abstract class Role implements MapObject{
     private int x, y, maxHp, hp;
     private State state;
@@ -54,5 +56,19 @@ public abstract class Role implements MapObject{
                 state = State.NORMAL; // 狀態結束
             }
         }
-    } 
+    }
+
+	public void move(Direction dir, Map map){
+		int newX = this.x, newY = this.y;
+		if(dir.equals(Direction.UP))
+			newY -= 1;
+		else if (dir.equals(Direction.DOWN)) 
+			newY += 1;
+		else if (dir.equals(Direction.RIGHT)) 
+			newX += 1;
+		else if (dir.equals(Direction.LEFT)) 
+			newX -= 1;
+
+		map.placeObject(this, newX, newY);
+	}
 }

@@ -50,17 +50,23 @@ public class Game {
         Scanner scanner = new Scanner(System.in);
         int choice = scanner.nextInt();
         if (choice == 1) {
-            char dir;
+            Direction nextDir;
             while (true) {
                 System.out.println("Choose direction: U:↑, D:↓, L:←, R:→");
-                dir = scanner.next().toUpperCase().charAt(0);
-                if (dir == 'U' || dir == 'D' || dir == 'L' || dir == 'R') {
-                    break; // 輸入正確，跳出迴圈
-                } else {
+                char dir = scanner.next().toUpperCase().charAt(0);
+                if (dir == 'U'){
+					nextDir = Direction.UP;
+				} else if (dir == 'D') {
+					nextDir = Direction.DOWN;
+				} else if (dir == 'L') {
+					nextDir = Direction.LEFT;
+				} else if (dir == 'R') {
+					nextDir = Direction.RIGHT;
+				} else {
                     System.out.println("Invalid input. Please enter U, D, L or R.");
                 }
             }
-            player.move(dir);
+            player.move(nextDir);
         } else {
             player.attack();
         }
