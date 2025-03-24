@@ -41,11 +41,28 @@ public class Map {
         obj.setPosition(x, y);
     }
 
-	public void placeObject(MapObject obj, int x, int y) {
-		//檢查有沒有超出範圍
-		if(x<0 || x>width)
-			
+	public void moveRole(Role obj, int x, int y) {
+		// 檢查有沒有超出範圍
+		if(x<0 || x>width || y<0 || y>height) {
+            System.out.println("Out of map range!");
+            return;
+        }
+
+        // 檢查該位置有沒有物件
+        if(grid[y][x] != null) {
+            if(!obj.touch(grid[y][x])) {//碰撞後決定是否移動到新位置
+                return;
+            }
+        }
+		
+        // 移動物件
+        grid[obj.getY()][obj.getX()] = null;
+        grid[y][x] = obj;
         obj.setPosition(x, y);
+        System.out.println(
+            String.format("%s(%d, %d) moves to (%d, %d)", 
+            obj.getClass().getSimpleName(), obj.getX(), obj.getY(), x, y
+        ));
     }
 
     public void printMap() {
@@ -56,5 +73,16 @@ public class Map {
             }
             System.out.println();
         }
+    }
+
+    public MapObject getObject(int x, int y) {
+        if(x<0 || x>width || y<0 || y>height) {
+            throw new IllegalArgumentException("Out of map range!");
+        }
+        return grid[y][x];
+    }
+
+    public void removeObj(MapObject obj) {
+        grid[obj.getY()][obj.getX()] = null;
     }
 }

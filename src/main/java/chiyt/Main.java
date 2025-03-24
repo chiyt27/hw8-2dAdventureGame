@@ -18,9 +18,9 @@ public class Main
 
         int monsterCount = 15, treasureCount = 10, obstacleCount = 20;
         List<MapObject> objs = new ArrayList<>();
-        objs.add(new Character(0, 0));
+        objs.add(new Character(0, 0, map));
         for (int i = 0; i < monsterCount; i++) {
-            objs.add(new Monster(0, 0));
+            objs.add(new Monster(0, 0, map));
         }
         for (int i = 0; i < treasureCount; i++) {
             objs.add(new Treasure(0, 0));

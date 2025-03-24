@@ -1,18 +1,18 @@
 package chiyt.model;
 
 import java.util.Random;
+import java.util.Scanner;
 
-import chiyt.Game;
 
 public class Character extends Role {
     Direction direction;
 
-    public Character(int x, int y) {
-        this(x, y, Direction.values()[new Random().nextInt(Direction.values().length)]);
+    public Character(int x, int y, Map map) {
+        this(x, y, Direction.values()[new Random().nextInt(Direction.values().length)], map);
     }
 
-    public Character(int x, int y, Direction direction) {
-        super(x, y, 300);
+    public Character(int x, int y, Direction direction, Map map) {
+        super(x, y, 300, map);
         this.direction = direction;
     }
 
@@ -21,23 +21,66 @@ public class Character extends Role {
         return direction.getSymbol();
     }
 
-    public void move(Direction dir, Map map) {
-		this.direction = dir;
-        if (newX >= 0 && newX < 10 && newY >= 0 && newY < 10 && map[newY][newX] != '□') {
-            x = newX;
-            y = newY;
-            if (map[y][x] == 'x') {
-                for (Treasure t : Game.this.treasures) {
-                    if (t != null && t.x == x && t.y == y) {
-                        touch(t);
+    @Override
+    public void playTurn() {
+        System.out.println("Choose action: 1. Move (U/D/L/R) 2. Attack");
+        Scanner scanner = new Scanner(System.in);
+        int choice = scanner.nextInt();
+        if (choice == 1) {
+            Direction nextDir = null;
+            boolean validInput = false;
+            while (!validInput) {
+                validInput = true;
+                System.out.println("Choose direction: U:↑, D:↓, L:←, R:→");
+                char dir = scanner.next().toUpperCase().charAt(0);
+                if (dir == 'U'){
+					nextDir = Direction.UP;
+				} else if (dir == 'D') {
+					nextDir = Direction.DOWN;
+				} else if (dir == 'L') {
+					nextDir = Direction.LEFT;
+				} else if (dir == 'R') {
+					nextDir = Direction.RIGHT;
+				} else {
+                    System.out.println("Invalid input. Please enter U, D, L or R.");
+                    validInput = false;
+                }
+            }
+            super.move(nextDir);
+        } else {
+            int dx = 0, dy = 0;
+            switch (direction) {
+                case UP: dy = -1; break;
+                case DOWN: dy = 1; break;
+                case LEFT: dx = -1; break;
+                case RIGHT: dx = 1; break;
+            }
+
+            int tx = this.getX();
+            int ty = this.getY();
+            while (true) {
+                tx += dx;
+                ty += dy;
+                try{
+                    MapObject obj = map.getObject(tx, ty);
+                    if (obj instanceof Obstacle) {
+                        System.out.println("Attack stopped: hit an obstacle.");
                         break;
                     }
-                }
-            } else if (map[y][x] == 'M') {
-                x = newX; y = newY; // Stay in place if touching monster
+                    if (obj instanceof Monster) {
+                        Monster monster = (Monster) obj;
+                        attack(monster);
+                    }
+                }catch(Exception e){
+                    break;
+                } 
             }
         }
-        map[y][x] = direction;
+    }
+
+    @Override
+    public int getAttackPower() {
+        return 100;
     }
 
     // public void attack() {

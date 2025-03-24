@@ -48,6 +48,16 @@ public class Treasure implements MapObject{
     }
 
     @Override
+    public int getX() {
+        return this.x;
+    }
+
+    @Override
+    public int getY() {
+        return this.y;
+    }
+
+    @Override
     public String getSymbol() {
         return "x";
     }
@@ -56,5 +66,9 @@ public class Treasure implements MapObject{
     public void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    public TreasureType getType() {
+        return this.type;
     }
 }

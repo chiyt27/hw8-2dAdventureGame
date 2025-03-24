@@ -18,4 +18,14 @@ public class Obstacle implements MapObject{
         this.x = x;
         this.y = y;
     }
+
+    @Override
+    public int getX() {
+        return this.x;
+    }
+
+    @Override
+    public int getY() {
+        return this.y;
+    }
 }
