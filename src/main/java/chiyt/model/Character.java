@@ -28,11 +28,11 @@ public class Character extends Role {
 	}
 
 	@Override
-	public void playTurn() {
+	public void executeTurnAction() {
 		System.out.println("Choose action: 1. Move (U/D/L/R) 2. Attack");
 		Scanner scanner = new Scanner(System.in);
-		int choice = scanner.nextInt();
-		if (choice == 1) {
+		char choice = scanner.next().toUpperCase().charAt(0);
+		if (choice == '1') {
 			Direction nextDir = null;
 			boolean validInput = false;
 			while (!validInput) {

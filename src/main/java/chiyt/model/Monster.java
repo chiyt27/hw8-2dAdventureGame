@@ -16,7 +16,7 @@ public class Monster extends Role {
 	}
 
 	@Override
-	public void playTurn() {
+	public void executeTurnAction() {
 		// 如果主角在怪物的攻擊範圍內，怪物會站在原地攻擊主角
 		List<MapObject> aroundObjs = new ArrayList<>();
 		try{ aroundObjs.add(map.getObject(getX()-1, getY())); }catch(Exception e){}

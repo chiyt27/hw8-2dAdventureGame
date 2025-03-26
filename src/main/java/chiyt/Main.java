@@ -29,9 +29,9 @@ public class Main
 		for (int i = 0; i < obstacleCount; i++) {
 			objs.add(new Obstacle(0, 0));
 		}
-
+		map.generateMap(objs);
 		
-		new Game(map, objs).startGame();
+		new Game(map).startGame();
 		
 	}
 }

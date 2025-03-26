@@ -39,25 +39,42 @@ public abstract class Role implements MapObject{
 		return hp;
 	}
 
-	public State getState() {
+	public State getState(){
 		return state;
+	}
+
+	public Map getMap(){
+		return map;
+	}
+
+	public int getDuration(){
+		return stateDuration;
 	}
 
 	public void setState(State state) {
 		State oldState = this.state;
-		this.state = state;
-		this.stateDuration = State.NORMAL.getDuration();
-		state.applyEffect(this);
 		if(!oldState.equals(state))
 			System.out.println(
 				String.format("%s(%d,%d) changes state from %s to %s", 
 				this.getClass().getSimpleName(), getY(), getX(), oldState.getName(), state.getName())
 			);
+		this.state = state;
+		this.stateDuration = state.getDuration();
+		state.applyEffect(this);
 	}
 
 	public void takeDamage(int damage) {
-		if(state == State.INVINCIBLE)
+		if(state.equals(State.INVINCIBLE))
 			return;
+		//加速:若在期間遭受攻擊則立刻恢復至正常狀態
+		else if(state.equals(State.ACCELERATED)){
+			this.setState(State.NORMAL);
+		}
+		//蓄力:若在期間遭受攻擊則立刻恢復至正常狀態
+		else if(state.equals(State.STOCKPILE)){
+			this.setState(State.NORMAL);
+		}
+
 		hp = Math.max(0, hp - damage);
 		if (hp == 0) {
 			System.out.println(String.format("%s(%d,%d) dies!", this.getClass().getSimpleName(), getY(), getX()));
@@ -67,16 +84,6 @@ public abstract class Role implements MapObject{
 
 	public void heal(int amount) {
 		hp = Math.min(maxHp, hp + amount);
-	}
-
-	public void updateState() {
-		if (state != State.NORMAL) {
-			state.applyEffect(this);
-			stateDuration--;
-			if (stateDuration <= 0) {
-				state = State.NORMAL; // 狀態結束
-			}
-		}
 	}
 
 	public void move(Direction dir){
@@ -99,7 +106,7 @@ public abstract class Role implements MapObject{
 		if(obj instanceof Treasure) {
 			Treasure t = (Treasure) obj;
 			State state = t.getType().getEffect();
-			System.out.println(String.format("%s(%d,%d) obtained %s!", this.getClass().getSimpleName(), getY(), getX(), t.getType().getName()));
+			System.out.println(String.format("%s(%d,%d) obtained %s(%d,%d)!", this.getClass().getSimpleName(), getY(), getX(), t.getType().getName(), t.getY(), t.getX()));
 			this.setState(state);
 		}
 		else {
@@ -118,6 +125,42 @@ public abstract class Role implements MapObject{
 		));
 	}
 
-	public abstract void playTurn();
+
+	public void playTurn(){
+		updateStateBeforeAction();
+
+		int actionCnt = 1;
+		if(this.state.equals(State.ACCELERATED))
+			actionCnt = 2;
+
+		for(int i=0; i<actionCnt; i++){
+			map.printMap(this.getX(), this.getY());
+			String msg = "\u001B[42;37m" + this.getClass().getSimpleName() + "\u001B[0m HP: " + this.getHp() + ", State: " + this.getState().getName();
+			if(!state.equals(State.NORMAL))
+				msg += (", Duration: " + stateDuration);
+
+			System.out.println(msg);
+			executeTurnAction();
+		}
+
+		updateStateAfterAction();
+	}
+
+
+	public void updateStateBeforeAction() {
+		if (!state.equals(State.NORMAL)) {
+			stateDuration--;
+			state.applyEffect(this);
+			if (stateDuration <= 0) {
+				state = State.NORMAL; // 狀態結束
+			}
+		}
+	}
+
+	public void updateStateAfterAction() {
+		
+	}
+
+	public abstract void executeTurnAction();
 	public abstract int getAttackPower();
 }

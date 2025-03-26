@@ -1,7 +1,5 @@
 package chiyt.model;
 
-import java.util.Random;
-
 public enum State {
 	NORMAL("Normal", 0) {
 		@Override
@@ -19,7 +17,7 @@ public enum State {
 		@Override
 		public void applyEffect(Role target) {
 			// 每回合開始時失去15點生命值
-			target.takeDamage(15); 
+			target.takeDamage(15);
 		}
 	},
 	ACCELERATED("Accelerated", 3) {
@@ -57,10 +55,9 @@ public enum State {
 		@Override
 		public void applyEffect(Role target) {
 			// 兩回合後進入爆發狀態，若在期間遭受攻擊則立刻恢復至正常狀態
-			// if (target.stateDuration == 0) {
-			//	 target.state = ERUPTING;
-			//	 target.stateDuration = ERUPTING.defaultDuration;
-			// }
+			if (target.getDuration() == 0) {
+				target.setState(State.ERUPTING);
+			}
 		}
 	},
 	ERUPTING("Erupting", 3) {
@@ -77,14 +74,10 @@ public enum State {
 		@Override
 		public void applyEffect(Role target) {
 			// 一回合後角色的位置將被隨機移動至任一空地
-			// Random r = new Random();
-			// int newX, newY;
-			// do {
-			//	 newX = r.nextInt(10); // 假設地圖大小為 10x10
-			//	 newY = r.nextInt(10);
-			// } while (!target.map.isPositionValid(newX, newY)); // 假設有方法檢查位置是否有效
-			// target.x = newX;
-			// target.y = newY;
+			if(target.getDuration()	== 0){
+				Map map = target.getMap();
+				map.placeObject(target);
+			}
 		}
 	};
 
