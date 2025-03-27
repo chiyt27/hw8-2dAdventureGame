@@ -1,10 +1,15 @@
 package chiyt.model;
 
+import chiyt.model.strategy.AttackStrategy;
+import chiyt.model.strategy.MoveStrategy;
+
 public abstract class Role implements MapObject{
 	private int x, y, maxHp, hp;
 	private State state = State.NORMAL;
 	private int stateDuration;
 	protected Map map;
+	private MoveStrategy moveStrategy;
+	private AttackStrategy attackStrategy;
 
 	public Role(int x, int y, int hp, Map map) {
 		this.x = x;
