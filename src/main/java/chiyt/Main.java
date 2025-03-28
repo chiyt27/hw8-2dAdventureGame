@@ -14,7 +14,7 @@ public class Main
 {
 	public static void main(String[] args) {
 		int width = 5, height = 5;
-		int monsterCount = 3, treasureCount = 10, obstacleCount = 3;
+		int monsterCount = 3, treasureCount = 5, obstacleCount = 3;
 
 		Map map = new Map(width, height);
 

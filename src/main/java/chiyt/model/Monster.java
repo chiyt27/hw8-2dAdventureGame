@@ -49,43 +49,4 @@ public class Monster extends Role {
 	public int getAttackPower() {
 		return 50;
 	}
-
-	// public void attack(Character target) {
-	//	 if (canAttack(target)) {
-	//		 target.hp -= 50;
-	//		 if (target.state == null || (!target.state.name.equals("Stockpile") && !target.state.name.equals("Accelerated"))) {
-	//			 target.state = new State("Invincible", 2);
-	//			 target.stateDuration = 2;
-	//		 }
-	//	 }
-	// }
-
-	// public boolean canAttack(Character target) {
-	//	 return (Math.abs(target.x - x) <= 1 && target.y == y) || (Math.abs(target.y - y) <= 1 && target.x == x);
-	// }
-
-	// public void touch(MapObject obj) {
-	//	 if (obj instanceof Treasure) {
-	//		 ((Treasure) obj).applyEffect(this);
-	//		 for (int i = 0; i < Game.this.treasures.length; i++) {
-	//			 if (Game.this.treasures[i] == obj) {
-	//				 Game.this.treasures[i] = null;
-	//				 break;
-	//			 }
-	//		 }
-	//	 }
-	// }
-
-	// public void updateState() {
-	//	 if (state != null) {
-	//		 state.applyEffect(this);
-	//		 stateDuration--;
-	//		 if (stateDuration <= 0) {
-	//			 state.removeEffect(this);
-	//			 state = null;
-	//		 }
-	//	 }
-	// }
-
-	
 }

@@ -18,6 +18,18 @@ public class Map {
 		this.grid = new MapObject[height][width];
 	}
 
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public boolean isValidPosition(int x, int y) {
+		return x >= 0 && x < width && y >= 0 && y < height;
+	}
+
 	public void generateMap(List<MapObject> objs) {
 		// 確保地圖不超過容量
 		int maxObjects = width * height;
@@ -66,9 +78,9 @@ public class Map {
 		return monsters;
 	}
 
-	public void moveRole(Role obj, int x, int y) {
+	public void moveObject(MapObject obj, int x, int y) {
 		// 檢查有沒有超出範圍
-		if(x<0 || x>=width || y<0 || y>=height) {
+		if(!isValidPosition(x,y)) {
 			System.out.println("Out of map range!");
 			return;
 		}
@@ -125,8 +137,8 @@ public class Map {
 	}
 
 	public MapObject getObject(int x, int y) {
-		if(x<0 || x>=width || y<0 || y>=height) {
-			throw new IllegalArgumentException("Out of map range!");
+		if(!isValidPosition(x,y)) {
+			throw new IllegalArgumentException("Failed to retrieve the object: Out of map range!");
 		}
 		return grid[y][x];
 	}

@@ -28,4 +28,9 @@ public class Obstacle implements MapObject{
 	public int getY() {
 		return this.y;
 	}
+
+	@Override
+	public boolean touch(MapObject obj) {
+		return false;//Don't move
+	}
 }
