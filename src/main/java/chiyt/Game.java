@@ -5,7 +5,6 @@ import chiyt.model.Monster;
 
 public class Game {
 	private Map map;
-	
 
 	public Game(Map map) {
 		this.map = map;
@@ -15,14 +14,12 @@ public class Game {
 		while (!endGame()) {
 			map.getPlayer().playTurn();
 			for(Monster m : map.getMonsters()) {
-				if (m != null) {
-					m.playTurn();
-				}
+				m.playTurn();
 			}
 		}
 	}
 
-	public boolean endGame() {
+	private boolean endGame() {
 		if(map.getPlayer().getHp() <= 0) {
 			System.out.println("You Lose!");
 			return true;

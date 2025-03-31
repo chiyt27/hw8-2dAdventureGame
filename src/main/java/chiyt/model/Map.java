@@ -31,21 +31,13 @@ public class Map {
 	}
 
 	public void generateMap(List<MapObject> objs) {
-		// 確保地圖不超過容量
+		// 確保物件不超過地圖容量
 		int maxObjects = width * height;
 		int totalObjects = objs.size();
 		if (totalObjects > maxObjects) {
 			throw new IllegalArgumentException("Too many objects for the map size!");
 		}
 
-		this.player = (Character) objs.get(0);
-		this.monsters = new ArrayList<>();
-		for (int i = 1; i < objs.size(); i++) {
-			if (objs.get(i) instanceof Monster) {
-				
-			}
-		}
-	
 		// 隨機放置物件
 		for(MapObject obj : objs) {
 			if(obj instanceof Character) {
@@ -53,11 +45,11 @@ public class Map {
 			} else if(obj instanceof Monster) {
 				monsters.add((Monster) obj);
 			}
-			placeObject(obj);
+			randomPlaceObject(obj);
 		}
 	}
 
-	public void placeObject(MapObject obj) {
+	public void randomPlaceObject(MapObject obj) {
 		Random rand = new Random();
 		int x, y;
 	

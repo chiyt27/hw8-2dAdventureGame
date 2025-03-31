@@ -137,7 +137,7 @@ public enum State {
 			// 一回合後角色的位置將被隨機移動至任一空地
 			if(target.getDuration()	== 0){
 				Map map = target.getMap();
-				map.placeObject(target);
+				map.randomPlaceObject(target);
 			}
 			super.applyEffect(target);
 		}
