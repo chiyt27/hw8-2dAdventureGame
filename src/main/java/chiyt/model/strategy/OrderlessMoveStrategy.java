@@ -48,10 +48,6 @@ public class OrderlessMoveStrategy implements MoveStrategy {
 
         map.moveObject(role, newX, newY);
 
-        // if (target instanceof Treasure) {
-        //     ((Treasure) target).applyEffect(role);
-        // }
-
         return true;
     }
 }

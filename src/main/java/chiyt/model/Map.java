@@ -16,6 +16,7 @@ public class Map {
 		this.width = width;
 		this.height = height;
 		this.grid = new MapObject[height][width];
+		this.monsters = new ArrayList<>();
 	}
 
 	public int getWidth() {
@@ -73,7 +74,7 @@ public class Map {
 	public void moveObject(MapObject obj, int x, int y) {
 		// 檢查有沒有超出範圍
 		if(!isValidPosition(x,y)) {
-			System.out.println("Out of map range!");
+			System.out.println("Failed to move: Out of map range. Movement aborted.");
 			return;
 		}
 

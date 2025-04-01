@@ -5,6 +5,14 @@ import java.util.Scanner;
 
 public enum State {
 	NORMAL("Normal", 0) {
+		@Override
+		public void handleDamage(Role target, int damage){
+			super.handleDamage(target, damage);
+			if (target.getHp() > 0) {
+				if(target instanceof Character)
+					target.setState(State.INVINCIBLE);
+			}
+		}
 	},
 	INVINCIBLE("Invincible", 2) {
 		@Override
@@ -15,50 +23,78 @@ public enum State {
 	},
 	POISONED("Poisoned", 3) {
 		@Override
-		public void applyEffect(Role target) {
+		public void startTurn(Role target){
 			// 每回合開始時失去15點生命值
-			target.takeDamage(15);
-			super.applyEffect(target);
+			System.out.println("Lose 15 HP due to poisoning.");
+			super.handleDamage(target, 15);
+		}
+
+		@Override
+		public void handleDamage(Role target, int damage){
+			super.handleDamage(target, damage);
+			if (target.getHp() > 0) {
+				if(target instanceof Character)
+					target.setState(State.INVINCIBLE);
+			}
 		}
 	},
 	ACCELERATED("Accelerated", 3) {
 		@Override
 		public void handleDamage(Role target, int damage){
 			// 若在期間遭受攻擊則立刻恢復至正常狀態
+			super.handleDamage(target, damage);
 			System.out.println(String.format("%s(%d,%d) in ACCELERATED is attacked and will return to normal state!", target.getClass().getSimpleName(), target.getY(), target.getX()));
 			target.setState(State.NORMAL);
 		}
 
 		@Override
-		public void handleTurnAction(Role target){
+		public void executeTurnAction(Role target){
 			// 每回合中可以進行「兩次動作」
 			for(int i = 0; i < 2; i++)
-				super.handleTurnAction(target);
+				super.executeTurnAction(target);
 		}
 	},
 	HEALING("Healing", 5) {
 		@Override
-		public void applyEffect(Role target) {
+		public void startTurn(Role target) {
 			// 每回合開始時恢復30點生命值，直到滿血。若滿血則立刻恢復至正常狀態
 			target.heal(30);
 			if(target.getHp() == target.getMaxHp()) 
 				target.setState(State.NORMAL);
 		}
+
+		@Override
+		public void handleDamage(Role target, int damage){
+			super.handleDamage(target, damage);
+			if (target.getHp() > 0) {
+				if(target instanceof Character)
+					target.setState(State.INVINCIBLE);
+			}
+		}
 	},
 	ORDERLESS("Orderless", 3) {
-			// 每回合隨機取得以下其中一種效果：
-			// 1. 只能進行上下移動 
-			// 2. 只能進行左右移動（角色只能移動，不能選擇做其他操作）
-			// Random rand = new Random();
-			// if (rand.nextBoolean()) {
-			//	 // 只能上下移動
-			//	 System.out.println("Can only move UP or DOWN.");
-			// } else {
-			//	 // 只能左右移動
-			//	 System.out.println("Can only move LEFT or RIGHT.");
-			// }
+			@Override
+			public void handleDamage(Role target, int damage){
+				super.handleDamage(target, damage);
+				if (target.getHp() > 0) {
+					if(target instanceof Character)
+						target.setState(State.INVINCIBLE);
+				}
+			}
+
+		// 每回合隨機取得以下其中一種效果：
+		// 1. 只能進行上下移動 
+		// 2. 只能進行左右移動（角色只能移動，不能選擇做其他操作）
+		// Random rand = new Random();
+		// if (rand.nextBoolean()) {
+		//	 // 只能上下移動
+		//	 System.out.println("Can only move UP or DOWN.");
+		// } else {
+		//	 // 只能左右移動
+		//	 System.out.println("Can only move LEFT or RIGHT.");
+		// }
 		@Override
-		public void handleTurnAction(Role target){
+		public void executeTurnAction(Role target){
 			target.getMap().printMap(target.getX(), target.getY());
 			String msg = "\u001B[42;37m" + target.getClass().getSimpleName() + "\u001B[0m HP: " 
 							+ target.getHp() + ", State: " + target.getState().getName();
@@ -85,15 +121,53 @@ public enum State {
 			}
 
 			//
+			Direction nextDir = null;
 			if(target instanceof Character){
 				System.out.println(msg);
 				Scanner scanner = new Scanner(System.in);
+				boolean validInput = false;
+				
+				while (!validInput) {
+					validInput = true;
+					char dir = scanner.next().toUpperCase().charAt(0);
+					if (isVertical && dir == 'U'){
+						nextDir = Direction.UP;
+					} else if (isVertical && dir == 'D') {
+						nextDir = Direction.DOWN;
+					} else if (!isVertical && dir == 'L') {
+						nextDir = Direction.LEFT;
+					} else if (!isVertical && dir == 'R') {
+						nextDir = Direction.RIGHT;
+					} else {
+						System.out.println("Invalid input. " + msg);
+						validInput = false;
+					}
+				}
 			}
+			else if (target instanceof Monster) {
+				boolean validInput = false;
+				while (!validInput) {
+					validInput = true;
+					int dir = rand.nextInt(4);
+					if (isVertical && dir == 0){
+						nextDir = Direction.UP;
+					} else if (isVertical && dir == 1) {
+						nextDir = Direction.DOWN;
+					} else if (!isVertical && dir == 2) {
+						nextDir = Direction.LEFT;
+					} else if (!isVertical && dir == 3) {
+						nextDir = Direction.RIGHT;
+					} else {
+						validInput = false;
+					}
+				}
+			}
+			target.move(nextDir);
 		}
 	},
 	STOCKPILE("Stockpile", 2) {
 		@Override
-		public void applyEffect(Role target) {
+		public void endTurn(Role target) {
 			// 兩回合後進入爆發狀態
 			if (target.getDuration() == 0) {
 				target.setState(State.ERUPTING);
@@ -102,6 +176,7 @@ public enum State {
 
 		@Override
 		public void handleDamage(Role target, int damage){
+			super.handleDamage(target, damage);
 			// 若在期間遭受攻擊則立刻恢復至正常狀態
 			System.out.println(String.format("%s(%d,%d) in STOCKPILE is attacked and will return to normal state!", target.getClass().getSimpleName(), target.getY(), target.getX()));
 			target.setState(State.NORMAL);
@@ -109,10 +184,19 @@ public enum State {
 	},
 	ERUPTING("Erupting", 3) {
 		@Override
-		public void applyEffect(Role target) {
-			//三回合過後取得瞬身狀態。
+		public void endTurn(Role target) {
+			//三回合過後取得瞬身狀態
 			if (target.getDuration() == 0) {
 				target.setState(State.TELEPORT);
+			}
+		}
+
+		@Override
+		public void handleDamage(Role target, int damage){
+			super.handleDamage(target, damage);
+			if (target.getHp() > 0) {
+				if(target instanceof Character)
+					target.setState(State.INVINCIBLE);
 			}
 		}
 
@@ -132,14 +216,22 @@ public enum State {
 		}
 	},
 	TELEPORT("Teleport", 1) {
-		@Override
-		public void applyEffect(Role target) {
-			// 一回合後角色的位置將被隨機移動至任一空地
-			if(target.getDuration()	== 0){
+		public void endTurn(Role target) {
+			//一回合後角色的位置將被隨機移動至任一空地
+			if (target.getDuration() == 0) {
 				Map map = target.getMap();
 				map.randomPlaceObject(target);
+				target.setState(State.NORMAL);
 			}
-			super.applyEffect(target);
+		}
+
+		@Override
+		public void handleDamage(Role target, int damage){
+			super.handleDamage(target, damage);
+			if (target.getHp() > 0) {
+				if(target instanceof Character)
+					target.setState(State.INVINCIBLE);
+			}
 		}
 	};
 
@@ -159,6 +251,20 @@ public enum State {
 		return duration;
 	}
 
+	public void startTurn(Role target){
+
+	}
+
+	public void executeTurnAction(Role target){
+		
+		target.executeTurnAction();
+	}
+
+	public void endTurn(Role target){
+		if(target.getDuration()==0)
+			target.setState(State.NORMAL);
+	}
+
 	public void handleDamage(Role target, int damage){
 		int hp = Math.max(0, target.getHp() - damage);
 		target.setHp(hp);
@@ -175,22 +281,5 @@ public enum State {
 			target.getClass().getSimpleName(), target.getY(), target.getX()
 		));
 		target.takeDamage(attacker.getAttackPower());
-	}
-
-	public void handleTurnAction(Role target){
-		target.getMap().printMap(target.getX(), target.getY());
-		String msg = "\u001B[42;37m" + target.getClass().getSimpleName() + "\u001B[0m HP: " 
-						+ target.getHp() + ", State: " + target.getState().getName();
-		if(!target.getState().equals(State.NORMAL))
-			msg += (", Duration: " + target.getDuration());
-
-		System.out.println(msg);
-		target.executeTurnAction();
-	}
-
-	public void applyEffect(Role target){
-		if (target.getDuration() == 0 && !this.equals(State.NORMAL)) {
-			target.setState(State.NORMAL);
-		}
 	}
 }

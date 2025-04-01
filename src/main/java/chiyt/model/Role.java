@@ -38,7 +38,11 @@ public abstract class Role implements MapObject{
 	public int getDuration(){
 		return stateDuration;
 	}
-	
+
+	public void setDuration(int stateDuration){
+		this.stateDuration = Math.max(0, stateDuration);
+	}
+
 	public int getMaxHp(){
 		return maxHp;
 	}
@@ -56,15 +60,15 @@ public abstract class Role implements MapObject{
 	}
 
 	public void setState(State state) {
-		State oldState = this.state;
-		if(!oldState.equals(state))
+		if(!this.state.equals(state))
 			System.out.println(
-				String.format("%s(%d,%d) changes state from %s to %s", 
-				this.getClass().getSimpleName(), getY(), getX(), oldState.getName(), state.getName())
+				String.format("%s(%d,%d) changes state from %s(%d) to %s(%d)", 
+					this.getClass().getSimpleName(), getY(), getX(), 
+					this.state.getName(), this.stateDuration,
+					state.getName(), state.getDuration())
 			);
 		this.state = state;
 		this.stateDuration = state.getDuration();
-		state.applyEffect(this);
 	}
 
 	public void takeDamage(int damage) {
@@ -112,16 +116,26 @@ public abstract class Role implements MapObject{
 
 
 	public void playTurn(){
+		State oldState = state;
 		//1.
-		state.applyEffect(this);
+		state.startTurn(this);
 
 		//2.
-		state.handleTurnAction(this);
+		map.printMap(getX(), getY());
+		String msg = "\u001B[42;37m" + getClass().getSimpleName() + "\u001B[0m HP: " 
+						+ getHp() + ", State: " + getState().getName();
+		if(!getState().equals(State.NORMAL))
+			msg += (", Duration: " + getDuration());
+
+		System.out.println(msg);
+		state.executeTurnAction(this);
 
 		//3.
-		if (!state.equals(State.NORMAL)) {
-			stateDuration--;
-		}
+		//這次沒有改變狀態，需要扣效果持續時間
+		if(oldState.equals(state))
+			setDuration(getDuration() - 1);
+
+		state.endTurn(this);
 	}
 
 	public abstract void executeTurnAction();

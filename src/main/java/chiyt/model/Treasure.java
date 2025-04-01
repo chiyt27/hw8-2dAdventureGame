@@ -39,12 +39,12 @@ public class Treasure implements MapObject{
 		Random rand = new Random();
 		double r = rand.nextDouble();
 		if (r < 0.1) type = TreasureType.SUPER_STAR;
-		// else if (r < 0.35) type = TreasureType.POISON;
-		// else if (r < 0.55) type = TreasureType.ACCELERATING_POTION;
-		// else if (r < 0.7) type = TreasureType.HEALING_POTION;
-		// else if (r < 0.8) type = TreasureType.DEVIL_FRUIT;
-		// else if (r < 0.9) type = TreasureType.KINGS_ROCK;
-		// else type = TreasureType.DOKODEMO_DOOR;
+		else if (r < 0.35) type = TreasureType.POISON;
+		else if (r < 0.55) type = TreasureType.ACCELERATING_POTION;
+		else if (r < 0.7) type = TreasureType.HEALING_POTION;
+		else if (r < 0.8) type = TreasureType.DEVIL_FRUIT;
+		else if (r < 0.9) type = TreasureType.KINGS_ROCK;
+		else type = TreasureType.DOKODEMO_DOOR;
 		type = TreasureType.ACCELERATING_POTION;
 	}
 
