@@ -2,6 +2,8 @@ package chiyt.model;
 
 import java.util.Random;
 
+import chiyt.model.State.State;
+
 public class Treasure implements MapObject{
 	enum TreasureType {
 		SUPER_STAR("Super Star", State.INVINCIBLE),

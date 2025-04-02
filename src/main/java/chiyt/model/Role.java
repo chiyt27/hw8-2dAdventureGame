@@ -1,8 +1,11 @@
 package chiyt.model;
 
+import chiyt.model.State.NormalState;
+import chiyt.model.State.State;
+
 public abstract class Role implements MapObject{
 	private int x, y, maxHp, hp;
-	private State state = State.NORMAL;
+	private State state;
 	private int stateDuration;
 	protected Map map;
 
@@ -11,7 +14,7 @@ public abstract class Role implements MapObject{
 		this.y = y;
 		this.maxHp = hp;
 		this.hp = hp;
-		this.setState(State.NORMAL);
+		this.setState(new NormalState(this));
 		this.map = map;
 	}
 
@@ -72,7 +75,7 @@ public abstract class Role implements MapObject{
 	}
 
 	public void takeDamage(int damage) {
-		state.handleDamage(this, damage);
+		state.handleDamage(damage);
 	}
 
 	public void heal(int amount) {
@@ -111,31 +114,31 @@ public abstract class Role implements MapObject{
 	}
 
 	public void attack(Role target) {
-		state.handleAttack(this, target);
+		state.handleAttack(target);
 	}
 
 
 	public void playTurn(){
 		State oldState = state;
 		//1.
-		state.startTurn(this);
+		state.startTurn();
 
 		//2.
 		map.printMap(getX(), getY());
-		String msg = "\u001B[42;37m" + getClass().getSimpleName() + "\u001B[0m HP: " 
-						+ getHp() + ", State: " + getState().getName();
-		if(!getState().equals(State.NORMAL))
-			msg += (", Duration: " + getDuration());
+		String msg = "\u001B[42;37m" + getClass().getSimpleName() + "\u001B[0m ";
+		msg += ("HP: " + getHp());
+		msg += (", State: " + getState().getName());
+		msg += (", Duration: " + getDuration());
 
 		System.out.println(msg);
-		state.executeTurnAction(this);
+		state.executeTurnAction();
 
 		//3.
 		//這次沒有改變狀態，需要扣效果持續時間
 		if(oldState.equals(state))
 			setDuration(getDuration() - 1);
 
-		state.endTurn(this);
+		state.endTurn();
 	}
 
 	public abstract void executeTurnAction();
