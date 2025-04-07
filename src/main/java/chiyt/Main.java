@@ -29,7 +29,7 @@ public class Main
 		for (int i = 0; i < obstacleCount; i++) {
 			objs.add(new Obstacle(0, 0));
 		}
-		map.generateMap(objs);
+		map.addObjectsToMap(objs);
 		
 		new Game(map).startGame();
 		

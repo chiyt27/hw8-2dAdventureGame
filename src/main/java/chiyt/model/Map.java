@@ -19,19 +19,11 @@ public class Map {
 		this.monsters = new ArrayList<>();
 	}
 
-	public int getWidth() {
-		return width;
-	}
-
-	public int getHeight() {
-		return height;
-	}
-
-	public boolean isValidPosition(int x, int y) {
+	private boolean isValidPosition(int x, int y) {
 		return x >= 0 && x < width && y >= 0 && y < height;
 	}
 
-	public void generateMap(List<MapObject> objs) {
+	public void addObjectsToMap(List<MapObject> objs) {
 		// 確保物件不超過地圖容量
 		int maxObjects = width * height;
 		int totalObjects = objs.size();
@@ -50,6 +42,10 @@ public class Map {
 		}
 	}
 
+	/***
+	 * 隨機放置物件
+	 * @param obj
+	 */
 	public void randomPlaceObject(MapObject obj) {
 		Random rand = new Random();
 		int x, y;
@@ -71,6 +67,12 @@ public class Map {
 		return monsters;
 	}
 
+	/***
+	 * 移動物件，會把原本位置的物件設為null
+	 * @param obj
+	 * @param x
+	 * @param y
+	 */
 	public void moveObject(MapObject obj, int x, int y) {
 		// 檢查有沒有超出範圍
 		if(!isValidPosition(x,y)) {

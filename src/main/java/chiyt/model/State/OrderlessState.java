@@ -68,7 +68,6 @@ public class OrderlessState extends State{
 			System.out.println(msg);
 			Scanner scanner = new Scanner(System.in);
 			boolean validInput = false;
-			
 			while (!validInput) {
 				validInput = true;
 				char dir = scanner.next().toUpperCase().charAt(0);

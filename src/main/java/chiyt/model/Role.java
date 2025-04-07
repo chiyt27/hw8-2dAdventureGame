@@ -14,8 +14,8 @@ public abstract class Role implements MapObject{
 		this.y = y;
 		this.maxHp = hp;
 		this.hp = hp;
-		this.setState(new NormalState(this));
 		this.map = map;
+		this.setState(new NormalState(this));
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public abstract class Role implements MapObject{
 	}
 
 	public void setState(State state) {
-		if(!this.state.equals(state))
+		if(this.state!=null && !this.state.equals(state))
 			System.out.println(
 				String.format("%s(%d,%d) changes state from %s(%d) to %s(%d)", 
 					this.getClass().getSimpleName(), getY(), getX(), 
@@ -83,16 +83,8 @@ public abstract class Role implements MapObject{
 	}
 
 	public void move(Direction dir){
-		int newX = this.x, newY = this.y;
-		if(dir.equals(Direction.UP))
-			newY -= 1;
-		else if (dir.equals(Direction.DOWN)) 
-			newY += 1;
-		else if (dir.equals(Direction.RIGHT)) 
-			newX += 1;
-		else if (dir.equals(Direction.LEFT)) 
-			newX -= 1;
-
+		int newX = this.x + dir.getDx();
+		int newY = this.y + dir.getDy();
 		map.moveObject(this, newX, newY);
 	}
 
@@ -102,9 +94,8 @@ public abstract class Role implements MapObject{
 		// 如果位置是寶物，取得寶物效果。如果是主角、怪物或障礙物則不移動
 		if(obj instanceof Treasure) {
 			Treasure t = (Treasure) obj;
-			State state = t.getType().getEffect();
 			System.out.println(String.format("%s(%d,%d) obtained %s(%d,%d)!", this.getClass().getSimpleName(), getY(), getX(), t.getType().getName(), t.getY(), t.getX()));
-			this.setState(state);
+			t.applyEffect(this);
 		}
 		else {
 			System.out.println(String.format("The position(%d,%d) is already occupied by %s, not moving.", obj.getY(), obj.getX(), obj.getClass().getSimpleName()));

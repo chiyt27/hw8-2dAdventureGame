@@ -5,29 +5,26 @@ import java.util.Random;
 import chiyt.model.State.State;
 
 public class Treasure implements MapObject{
+
+	private static StateStrategy stateStrategy = new StateStrategy();
+
 	enum TreasureType {
-		SUPER_STAR("Super Star", State.INVINCIBLE),
-		POISON("Poison", State.POISONED),
-		ACCELERATING_POTION("Accelerating Potion", State.ACCELERATED),
-		HEALING_POTION("Healing Potion", State.HEALING),
-		DEVIL_FRUIT("Devil Fruit", State.ORDERLESS),
-		KINGS_ROCK("King's Rock", State.STOCKPILE),
-		DOKODEMO_DOOR("Dokodemo Door", State.TELEPORT);
+		SUPER_STAR("Super Star"),
+		POISON("Poison"),
+		ACCELERATING_POTION("Accelerating Potion"),
+		HEALING_POTION("Healing Potion"),
+		DEVIL_FRUIT("Devil Fruit"),
+		KINGS_ROCK("King's Rock"),
+		DOKODEMO_DOOR("Dokodemo Door");
 	
 		private final String name;
-		private final State effect;
 	
-		TreasureType(String name, State effect) {
+		TreasureType(String name) {
 			this.name = name;
-			this.effect = effect;
 		}
 	
 		public String getName() {
 			return name;
-		}
-	
-		public State getEffect() {
-			return effect;
 		}
 	}
 
@@ -78,5 +75,10 @@ public class Treasure implements MapObject{
 	@Override
 	public boolean touch(MapObject obj) {
 		return false;//Don't move
+	}
+
+	public void applyEffect(Role role) {
+		State newState = stateStrategy.applyEffect(role, type);
+		role.setState(newState);
 	}
 }

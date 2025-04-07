@@ -7,7 +7,7 @@ import chiyt.model.Monster;
 public class NormalState extends State{
 
 	public NormalState(Role target) {
-		super(target, "Normal", 0);
+		super(target, "Normal", Integer.MAX_VALUE);
 	}
 
 	@Override
