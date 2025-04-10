@@ -1,13 +1,10 @@
 package chiyt.model.State;
 
-import chiyt.model.Role;
+import chiyt.model.*;
+import chiyt.model.Character;
 
 import java.util.Random;
 import java.util.Scanner;
-
-import chiyt.model.Character;
-import chiyt.model.Direction;
-import chiyt.model.Monster;
 
 public class OrderlessState extends State{
 
@@ -37,17 +34,9 @@ public class OrderlessState extends State{
 	// }
 	@Override
 	public void executeTurnAction(){
-		target.getMap().printMap(target.getX(), target.getY());
-		String msg = "\u001B[42;37m" + target.getClass().getSimpleName() + "\u001B[0m HP: " 
-						+ target.getHp() + ", State: " + target.getState().getName();
-		if(!target.getState().equals(new NormalState(target)))
-			msg += (", Duration: " + target.getDuration());
-
-		System.out.println(msg);
-		
 		//隨機決定只能上下移動，或左右移動
 		boolean isVertical = true;
-		msg = ""; 
+		String msg = "";
 		Random rand = new Random();
 		
 		if (rand.nextBoolean()) {

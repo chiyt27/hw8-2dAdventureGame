@@ -32,7 +32,7 @@ public class EruptingState extends State{
 		Role attacker = this.target;
 		Role target = attackedTarget;
 		// 角色的攻擊範圍擴充至「全地圖」，且攻擊行為變成「全場攻擊」：每一次攻擊時都會攻擊到地圖中所有其餘角色，且攻擊力為50。
-		System.out.println(String.format("%s(%d,%d) attacks all roles in the map!", attacker.getClass().getSimpleName(), attacker.getY(), attacker.getX()));
+		System.out.println(String.format("%s(%d,%d) attacks all roles in the map!", attacker.getSimpleName(), attacker.getY(), attacker.getX()));
 		if(!attacker.equals(attacker.getMap().getPlayer()))
 			attacker.getMap().getPlayer().takeDamage(50);
 		

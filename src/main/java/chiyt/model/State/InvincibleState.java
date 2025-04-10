@@ -11,6 +11,6 @@ public class InvincibleState extends State{
 	@Override
 	public void handleDamage(int damage){
 		// 受到攻擊時並不會有任何生命損失
-		System.out.println(String.format("%s(%d,%d) is invincible and will not take damage!", target.getClass().getSimpleName(), target.getY(), target.getX()));	
+		System.out.println(String.format("%s(%d,%d) is invincible and will not take damage!", target.getSimpleName(), target.getY(), target.getX()));	
 	}
 }

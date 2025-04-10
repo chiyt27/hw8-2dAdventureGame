@@ -4,6 +4,7 @@ public interface MapObject {
 	int getX();
 	int getY();
 	String getSymbol();
+	String getSimpleName();
 	void setPosition(int x, int y);
-	boolean touch(MapObject obj);
+	boolean touch(MapObject mover);
 }

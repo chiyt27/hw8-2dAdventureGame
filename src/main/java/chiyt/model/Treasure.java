@@ -44,7 +44,6 @@ public class Treasure implements MapObject{
 		else if (r < 0.8) type = TreasureType.DEVIL_FRUIT;
 		else if (r < 0.9) type = TreasureType.KINGS_ROCK;
 		else type = TreasureType.DOKODEMO_DOOR;
-		type = TreasureType.ACCELERATING_POTION;
 	}
 
 	@Override
@@ -63,22 +62,28 @@ public class Treasure implements MapObject{
 	}
 
 	@Override
+	public String getSimpleName() {
+		return "Treasure";
+	}
+
+	@Override
 	public void setPosition(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
 
-	public TreasureType getType() {
-		return this.type;
-	}
-
 	@Override
-	public boolean touch(MapObject obj) {
-		return false;//Don't move
-	}
-
-	public void applyEffect(Role role) {
-		State newState = stateStrategy.applyEffect(role, type);
-		role.setState(newState);
+	public boolean touch(MapObject mover) {
+		// 如果是主角或怪物則取得寶物效果
+		if (mover instanceof Role) {
+			Role role = (Role) mover;
+			System.out.println(
+				String.format("%s(%d,%d) obtained %s(%d,%d)!", 
+				role.getSimpleName(), role.getY(), role.getX(), this.type.getName(), this.y, this.x));
+			// applyEffect
+			State newState = stateStrategy.applyEffect(role, type);
+			role.setState(newState);
+		}
+		return true;// 碰撞後移動到新位置
 	}
 }

@@ -23,12 +23,9 @@ public abstract class State {
 		return duration;
 	}
 
-	public void startTurn(){
-
-	}
+	public void startTurn(){}
 
 	public void executeTurnAction(){
-		
 		target.executeTurnAction();
 	}
 
@@ -41,7 +38,7 @@ public abstract class State {
 		int hp = Math.max(0, target.getHp() - damage);
 		target.setHp(hp);
 		if (hp == 0) {
-			System.out.println(String.format("%s(%d,%d) dies!", target.getClass().getSimpleName(), target.getY(), target.getX()));
+			System.out.println(String.format("%s(%d,%d) dies!", target.getSimpleName(), target.getY(), target.getX()));
 			target.getMap().removeObj(target);
 		}
 	}
@@ -51,8 +48,8 @@ public abstract class State {
 		Role target = attackedTarget;
 		System.out.println(
 			String.format("%s(%d,%d) attacks %s (%d,%d)", 
-			attacker.getClass().getSimpleName(), attacker.getY(), attacker.getY(), 
-			target.getClass().getSimpleName(), target.getY(), target.getX()
+			attacker.getSimpleName(), attacker.getY(), attacker.getX(), 
+			target.getSimpleName(), target.getY(), target.getX()
 		));
 		target.takeDamage(attacker.getAttackPower());
 	}

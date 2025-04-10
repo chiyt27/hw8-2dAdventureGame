@@ -11,12 +11,19 @@ public class Map {
 	private Character player;
 	private List<Monster> monsters;
 
-
 	public Map(int width, int height) {
 		this.width = width;
 		this.height = height;
 		this.grid = new MapObject[height][width];
 		this.monsters = new ArrayList<>();
+	}
+
+	public Character getPlayer(){
+		return player;
+	}
+
+	public List<Monster> getMonsters(){
+		return monsters;
 	}
 
 	private boolean isValidPosition(int x, int y) {
@@ -49,40 +56,32 @@ public class Map {
 	public void randomPlaceObject(MapObject obj) {
 		Random rand = new Random();
 		int x, y;
-	
 		do {
 			x = rand.nextInt(width);
 			y = rand.nextInt(height);
 		} while (grid[y][x] != null); // 確保該位置沒有物件
-	
+
 		grid[y][x] = obj;
 		obj.setPosition(x, y);
 	}
 
-	public Character getPlayer(){
-		return player;
-	}
-
-	public List<Monster> getMonsters(){
-		return monsters;
-	}
-
 	/***
 	 * 移動物件，會把原本位置的物件設為null
-	 * @param obj
-	 * @param x
-	 * @param y
+	 * @param mover
+	 * @param newX
+	 * @param newY
 	 */
-	public void moveObject(MapObject obj, int x, int y) {
+	public void moveObject(MapObject mover, int newX, int newY) {
 		// 檢查有沒有超出範圍
-		if(!isValidPosition(x,y)) {
+		if(!isValidPosition(newX, newY)) {
 			System.out.println("Failed to move: Out of map range. Movement aborted.");
 			return;
 		}
 
-		// 檢查該位置有沒有物件
-		if(grid[y][x] != null) {
-			if(!obj.touch(grid[y][x])) {//碰撞後決定是否移動到新位置
+		// 檢查該位置有沒有物件，如果有的話 進行碰撞處理
+		Object target = grid[newY][newX];
+		if(target != null && target instanceof MapObject) {
+			if(!((MapObject)target).touch(mover)) {//碰撞後決定是否移動到新位置
 				return;
 			}
 		}
@@ -90,18 +89,14 @@ public class Map {
 		// 移動物件
 		System.out.println(
 			String.format("%s(%d,%d) moves to (%d,%d)", 
-			obj.getClass().getSimpleName(), obj.getY(), obj.getX(), y, x
+			mover.getSimpleName(), mover.getY(), mover.getX(), newY, newX
 		));
-		grid[obj.getY()][obj.getX()] = null;
-		grid[y][x] = obj;
-		obj.setPosition(x, y);
+		grid[mover.getY()][mover.getX()] = null;
+		grid[newY][newX] = mover;
+		mover.setPosition(newX, newY);
 	}
 
-	public void printMap() {
-		printMap(-1, -1);
-	}
-
-	public void printMap(int x, int y) {
+	public void printMap(MapObject obj) {
 		// for (int i = 0; i < height; i++) {
 		// 	for (int j = 0; j < width; j++) {
 		// 		System.out.print(
@@ -109,6 +104,8 @@ public class Map {
 		// 	}
 		// 	System.out.println();
 		// }
+
+		int x = obj.getX(), y = obj.getY();
 		// 打印列座標
 		System.out.print(String.format("%4s", "\\"));
 		for (int j = 0; j < width; j++) {

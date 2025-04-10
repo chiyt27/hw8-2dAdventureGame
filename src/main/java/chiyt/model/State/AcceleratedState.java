@@ -12,7 +12,7 @@ public class AcceleratedState extends State{
 	public void handleDamage(int damage){
 		// 若在期間遭受攻擊則立刻恢復至正常狀態
 		super.handleDamage( damage);
-		System.out.println(String.format("%s(%d,%d) in ACCELERATED is attacked and will return to normal state!", target.getClass().getSimpleName(), target.getY(), target.getX()));
+		System.out.println(String.format("%s(%d,%d) in ACCELERATED is attacked and will return to normal state!", target.getSimpleName(), target.getY(), target.getX()));
 		target.setState(new NormalState(target));
 	}
 

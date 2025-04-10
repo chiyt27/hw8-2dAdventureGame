@@ -16,6 +16,11 @@ public class Monster extends Role {
 	}
 
 	@Override
+	public String getSimpleName() {
+		return "Monster";
+	}
+
+	@Override
 	public void executeTurnAction() {
 		// 如果主角在怪物的攻擊範圍內，怪物會站在原地攻擊主角
 		List<MapObject> aroundObjs = new ArrayList<>();
@@ -30,8 +35,7 @@ public class Monster extends Role {
 			}
 		}
 
-		// 如果主角沒有位於怪物的攻擊範圍之內的話
-		// 怪物將會自主決定要往哪一個方向移動一格，否則怪物會站在原地攻擊主角。
+		// 如果主角沒有位於怪物的攻擊範圍之內的話，怪物將會自主決定要往哪一個方向移動一格
 		// 將怪物執行的詳細動作內容印出。
 		Random rand = new Random();
 		Direction nextDir = null;

@@ -42,10 +42,6 @@ public abstract class Role implements MapObject{
 		return stateDuration;
 	}
 
-	public void setDuration(int stateDuration){
-		this.stateDuration = Math.max(0, stateDuration);
-	}
-
 	public int getMaxHp(){
 		return maxHp;
 	}
@@ -58,15 +54,11 @@ public abstract class Role implements MapObject{
 		this.hp = hp;
 	}
 
-	public State getState(){
-		return state;
-	}
-
 	public void setState(State state) {
 		if(this.state!=null && !this.state.equals(state))
 			System.out.println(
 				String.format("%s(%d,%d) changes state from %s(%d) to %s(%d)", 
-					this.getClass().getSimpleName(), getY(), getX(), 
+					this.getSimpleName(), getY(), getX(), 
 					this.state.getName(), this.stateDuration,
 					state.getName(), state.getDuration())
 			);
@@ -89,25 +81,17 @@ public abstract class Role implements MapObject{
 	}
 
 	@Override
-	public boolean touch(MapObject obj) {
-		boolean canMove = true;
-		// 如果位置是寶物，取得寶物效果。如果是主角、怪物或障礙物則不移動
-		if(obj instanceof Treasure) {
-			Treasure t = (Treasure) obj;
-			System.out.println(String.format("%s(%d,%d) obtained %s(%d,%d)!", this.getClass().getSimpleName(), getY(), getX(), t.getType().getName(), t.getY(), t.getX()));
-			t.applyEffect(this);
-		}
-		else {
-			System.out.println(String.format("The position(%d,%d) is already occupied by %s, not moving.", obj.getY(), obj.getX(), obj.getClass().getSimpleName()));
-			canMove = false;
-		}
-		return canMove;
+	public boolean touch(MapObject mover) {
+		System.out.println(
+			String.format("The position(%d,%d) is already occupied by %s, not moving.", 
+			getY(), getX(), getSimpleName())
+		);
+		return false;//Don't move
 	}
 
 	public void attack(Role target) {
 		state.handleAttack(target);
 	}
-
 
 	public void playTurn(){
 		State oldState = state;
@@ -115,10 +99,10 @@ public abstract class Role implements MapObject{
 		state.startTurn();
 
 		//2.
-		map.printMap(getX(), getY());
-		String msg = "\u001B[42;37m" + getClass().getSimpleName() + "\u001B[0m ";
+		map.printMap(this);
+		String msg = "\u001B[42;37m" + this.getSimpleName() + "\u001B[0m ";
 		msg += ("HP: " + getHp());
-		msg += (", State: " + getState().getName());
+		msg += (", State: " + this.state.getName());
 		msg += (", Duration: " + getDuration());
 
 		System.out.println(msg);
@@ -126,8 +110,9 @@ public abstract class Role implements MapObject{
 
 		//3.
 		//這次沒有改變狀態，需要扣效果持續時間
-		if(oldState.equals(state))
-			setDuration(getDuration() - 1);
+		if(oldState.equals(state)){
+			this.stateDuration = Math.max(0, this.stateDuration-1);
+		}
 
 		state.endTurn();
 	}

@@ -14,7 +14,7 @@ public class Main
 {
 	public static void main(String[] args) {
 		int width = 5, height = 5;
-		int monsterCount = 3, treasureCount = 5, obstacleCount = 3;
+		int monsterCount = 5, treasureCount = 5, obstacleCount = 3;
 
 		Map map = new Map(width, height);
 
@@ -32,6 +32,5 @@ public class Main
 		map.addObjectsToMap(objs);
 		
 		new Game(map).startGame();
-		
 	}
 }

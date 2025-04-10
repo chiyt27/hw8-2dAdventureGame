@@ -22,6 +22,11 @@ public class Character extends Role {
 	}
 
 	@Override
+	public String getSimpleName() {
+		return "Character";
+	}
+
+	@Override
 	public void move(Direction dir){
 		this.direction = dir;
 		super.move(dir);

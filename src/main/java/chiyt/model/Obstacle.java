@@ -14,6 +14,11 @@ public class Obstacle implements MapObject{
 	}
 
 	@Override
+	public String getSimpleName() {
+		return "Obstacle";
+	}
+
+	@Override
 	public void setPosition(int x, int y) {
 		this.x = x;
 		this.y = y;
@@ -30,7 +35,11 @@ public class Obstacle implements MapObject{
 	}
 
 	@Override
-	public boolean touch(MapObject obj) {
+	public boolean touch(MapObject mover) {
+		System.out.println(
+			String.format("The position(%d,%d) is already occupied by %s, not moving.", 
+			getY(), getX(), getSimpleName())
+		);
 		return false;//Don't move
 	}
 }
